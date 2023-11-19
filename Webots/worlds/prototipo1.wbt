@@ -4,6 +4,7 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/CircleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/appearances/protos/Plastic.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
 
 WorldInfo {
   basicTimeStep 16
@@ -17,15 +18,15 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.5673044739932817 0.567812292206006 -0.5964518711572352 2.065263980516842
-  position -0.26451027550956524 0.4995658852729387 0.6649023605700131
+  orientation -0.30150402650054053 -0.7098345612633479 0.6365769534314227 5.144077391666572
+  position -1.36214357760123 4.008399496992781 1.8127034003398903
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
 }
 Robot {
-  translation -0.25 0.5 0.0356099
+  translation -0.582873 3.23091 0.055
   rotation 0 0 1 1.5707
   children [
     Gyro {
@@ -152,7 +153,7 @@ Robot {
           ]
           endPoint Solid {
             translation 0.0285 0.04044 -0.0181
-            rotation 0.8230654516235278 0.40159810601068396 -0.40159958116560557 1.7643005334073503
+            rotation 0.8230654516235274 0.4015981060106842 -0.4015995811656058 1.7643005334073498
             children [
               Pose {
                 translation -0.0405 0.0046 0.0535
@@ -195,7 +196,7 @@ Robot {
           ]
           endPoint Solid {
             translation 0.0285 -0.0399 -0.0181
-            rotation -0.23565358558911562 -0.6871929680200473 0.6871922673479319 3.6044556098487406
+            rotation -0.2356535855891157 -0.6871929680200483 0.687192267347931 3.6044556098487406
             children [
               Pose {
                 translation 0.0404 0.0045 -0.0534
@@ -246,6 +247,7 @@ Robot {
   controller "maze_solution_algorithm"
 }
 Solid {
+  translation -7.36 0 0
   rotation 1 0 0 1.57
   children [
     DEF maze Shape {
@@ -269,4 +271,318 @@ Solid {
 }
 CircleArena {
   translation 2.1 0 0
+}
+Solid {
+  translation 0.28 2.57 0.05
+  children [
+    RectangleArena {
+      translation 0 0 -0.03
+      floorSize 2 1.5
+    }
+    Solid {
+      translation -0.875 0 0
+      children [
+        DEF wallShape Shape {
+          appearance Plastic {
+            colorOverride 0.682353 0.682353 0.682353
+          }
+          geometry Box {
+            size 0.25 0.01 0.05
+          }
+        }
+      ]
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.75 0.125 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(1)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.375 -0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(33)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.2494 -0.625799 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(34)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.75 -0.625 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(2)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.75 -0.375 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(3)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.625 -0.25 0
+      children [
+        USE wallShape
+      ]
+      name "solid(4)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.500502 -0.6296 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(5)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.375 -0.25 0
+      children [
+        USE wallShape
+      ]
+      name "solid(6)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.38 -0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(7)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.13 -0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(8)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.000294641 -0.37 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(9)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -9.55597e-05 -0.12 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(10)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.12 0 0
+      children [
+        USE wallShape
+      ]
+      name "solid(11)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.499896 0.130398 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(12)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.5 0.375 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(13)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.375 0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(14)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.125 0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(15)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.625 0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(16)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.75 0.625 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(17)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation -0.125 0.25 0
+      children [
+        USE wallShape
+      ]
+      name "solid(18)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.125 0.25 0
+      children [
+        USE wallShape
+      ]
+      name "solid(19)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.25 0.375 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(20)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.25 0.125 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(21)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.25 -0.125 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(22)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.375 -0.25 0
+      children [
+        USE wallShape
+      ]
+      name "solid(23)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.625 -0.25 0
+      children [
+        USE wallShape
+      ]
+      name "solid(24)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.75 -0.375 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(25)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.875 -0.5 0
+      children [
+        USE wallShape
+      ]
+      name "solid(26)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.5 -0.125 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(27)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.625 0 0
+      children [
+        USE wallShape
+      ]
+      name "solid(28)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.75 0.125 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(29)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.75 0.375 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(30)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.5 0.625 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(31)"
+      boundingObject USE wallShape
+    }
+    Solid {
+      translation 0.5 0.375 0
+      rotation 0 0 1 1.57
+      children [
+        USE wallShape
+      ]
+      name "solid(32)"
+      boundingObject USE wallShape
+    }
+  ]
 }
