@@ -139,6 +139,12 @@ int main() {
         run_delay = 0.85;
       }
       
+      if(dsValues[0] <= 14 && next_step == ANTICOLISION){
+        step = ANTICOLISION;
+        next_step = CURVE;
+        new_direction = 0;
+      }
+      
       if(turning_delay > run_delay){
         identified_curve_time = t;
         step = next_step;
