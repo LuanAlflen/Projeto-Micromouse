@@ -3,6 +3,11 @@
 #include <webots/Gyro.hpp>
 #include <webots/DistanceSensor.hpp>
 #include <cmath>
+#include <String>
+#define DEADZONE 0.75
+#define MAX_SPEED 8.33
+#define MINIMAL_ANGLE_ERROR_TURING 0.1
+
 
 #define TIME_STEP 16
 
@@ -16,6 +21,17 @@ Motor *motor2 = robot->getMotor("motor_2");
 Gyro *gyro = robot->getGyro("gyro");
 DistanceSensor *ds[3];
 
+
+void setMotorVelocityDeadzone (double velocity, Motor *motor){
+  if (abs(velocity) < DEADZONE*MAX_SPEED){
+    motor->setVelocity(0.0);
+  }
+  else{
+    motor->setVelocity(velocity);
+  
+  } 
+  
+}
 
 const int CURVE = 0;
 const int RUN = 1;
@@ -89,7 +105,7 @@ int main() {
 
   //const double F = 2.0;   // frequency 2 Hz
   double t = 0.0, turning_delay=99.0, identified_curve_time=0.0;         // elapsed simulation time
-  double max_speed = 8.37758;
+  double max_speed = MAX_SPEED;
   double base_speed = 0.0;
   double right_speed=0.0, left_speed=0.0;
   double error = 0.0, sum_error=0.0, error_sensors=0.0, sum_error_sensors=0.0;
@@ -105,9 +121,9 @@ int main() {
   }
   
   motor1->setPosition(INFINITY);
-  motor1->setVelocity(0.0);
+  setMotorVelocityDeadzone(0.0, motor1);
   motor2->setPosition(INFINITY);
-  motor2->setVelocity(0.0);
+  setMotorVelocityDeadzone(0.0, motor2);
   gyro->enable(TIME_STEP);
 
   
@@ -153,7 +169,7 @@ int main() {
       Ki = 0.0;
       
       if(dsValues[1] <= 4.0){
-        base_speed = 0.0*max_speed;
+        base_speed = 0.01*max_speed;
       }else{     
         base_speed = 1.0*max_speed;
       }
@@ -174,7 +190,7 @@ int main() {
                  
       Kp=50.0;
       Ki=0.0;
-      base_speed = 0.0*max_speed;
+      base_speed = 0.00*max_speed;
       
       // Cálculo do erro integrador
       sum_error += error;
@@ -183,15 +199,21 @@ int main() {
       proportional = Kp * error;
       right_speed = base_speed + proportional + integral;
       left_speed = base_speed - proportional - integral; 
-      next_step = ANTICOLISION;
-      if(abs(error) < 0.01){
-        step = RUN;
-        turning_delay = 0;
-        
-        orientation=0;
-        target = 0;//pois o angulo do giroscopio é resetado
-        new_direction = 0;//-------------------- isso muda algo?
-      }
+      // if (abs(right_speed) < DEADZONE*MAX_SPEED ||
+          // abs(left_speed)  < DEADZONE*MAX_SPEED){
+          // right_speed = DEADZONE*MAX_SPEED+1;
+          // left_speed = DEADZONE*MAX_SPEED+1; 
+          
+       // }
+        next_step = ANTICOLISION;
+        if(abs(error) < MINIMAL_ANGLE_ERROR_TURING){
+          step = RUN;
+          turning_delay = 0;
+          
+          orientation=0;
+          target = 0;//pois o angulo do giroscopio é resetado
+          new_direction = 0;//-------------------- isso muda algo?
+        }
       
        
     //--------------------------------------------------
@@ -258,8 +280,8 @@ int main() {
     
     //Passa os valores para os motores
     if(dsValues[1] <= 4 and target == 999.0/*new_direction*/){
-      motor2->setVelocity(0);
-      motor1->setVelocity(0);
+      setMotorVelocityDeadzone(0, motor1);
+      setMotorVelocityDeadzone(0, motor2);
     }else{
       //limitando a velocidade
       if(left_speed > max_speed){
@@ -274,8 +296,10 @@ int main() {
       if(right_speed < -max_speed){
         right_speed = -max_speed;
       }
-      motor2->setVelocity(left_speed);
-      motor1->setVelocity(right_speed);
+      printf("\nleft speed: %f,", left_speed);
+      printf(" right speed: %f\n", right_speed);
+      setMotorVelocityDeadzone(left_speed, motor2);
+      setMotorVelocityDeadzone(right_speed, motor1);
     }
     
     consolePrint(t, turning_delay, identified_curve_time, step, next_step, new_direction, error, error_sensors, Kp);   
