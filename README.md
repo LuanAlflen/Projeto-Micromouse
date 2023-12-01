@@ -4,6 +4,18 @@ Este projeto Micromouse é desenvolvido em Webots e inclui implementações de c
 
 ## Versões
 
+### Versão 7.0
+- Data: 30/11/2023
+
+#### Mudanças
+
+- Integração dos códigos da eletrônica ao controle no robô real.
+- Criação da pasta 'algoritmos_solucionadores' dentro da pasta 'eletronicas', contendo três versões. A versão mais avançada implementa os três estados descritos no diagrama de controle.
+- Ajustes necessários nos ganhos dos controladores, constantes de tempo do 'run' e ajuste de velocidades.
+- O robô ainda não está adaptado para identificar a marca final do labirinto.
+
+![Foto do projeto](Imagens/foto_robo.jpg).
+
 ### Versão 6.2.0.1
 
 - Data: 15/11/2023
