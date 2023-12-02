@@ -305,6 +305,7 @@ void loop(){
       //Verificando se é pra virar mesmo (apenas na primeira iteração do estado)
       if(target != new_direction and countCurve == 0){
         step = ANTICOLISION;
+        next_step = CURVE;
         target = new_direction;
         right_speed = 0.0;
         left_speed = 0.0; 
