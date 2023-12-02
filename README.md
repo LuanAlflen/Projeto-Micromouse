@@ -9,9 +9,10 @@ Este projeto Micromouse é desenvolvido em Webots e inclui implementações de c
 
 #### Mudanças
 
-- Foi adicionado ao estado curva o código de redundância pra ver se esta correto mesmo virar ou foi erro de leitura
-- Adicionado a comparação da função do motor conforme a Imagem
-- Atualização do diagrama de estados com a mudança da redundância
+- Foi adicionado ao estado curva o código de redundância pra ver se esta correto mesmo virar ou foi erro de leitura.
+- Adicionado a comparação da função do motor conforme a Imagem.
+- Atualização do diagrama de estados com a mudança da redundância.
+- Adição do código de teste do módulo display 7 segmentos.
 
 ![Função do motor](Imagens/funcao_motor.png).
 
