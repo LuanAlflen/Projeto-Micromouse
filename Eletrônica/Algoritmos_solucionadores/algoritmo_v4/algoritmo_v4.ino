@@ -179,6 +179,7 @@ unsigned long finalTime = millis();
 const int CURVE = 0;
 const int RUN = 1;
 const int ANTICOLISION = 2;
+const float DISTANCE_FOR_CURVE = 25.0;
 //const float M_PI 3.141592653589793238462643;
 
 float t = 0.0, turning_delay=99.0, identified_curve_time=0.0;
@@ -287,39 +288,64 @@ void loop(){
       left_speed = base_speed;
       break;
     case CURVE:
+
+      //Verificando se é pra virar mesmo (apenas na primeira iteração do estado)
       if(countCurve == 0){
-        offset = getAngle();
-        countCurve = 1;
+        if(dsValues[0] >= DISTANCE_FOR_CURVE){
+          new_direction = M_PI/2;
+        }else if(dsValues[1] >= DISTANCE_FOR_CURVE){
+          new_direction = 0;
+        }else if(dsValues[2] >= DISTANCE_FOR_CURVE){
+          new_direction = -M_PI/2;    
+        }else{
+          new_direction = M_PI;
+        }
       }
-      orientation = getAngle() - offset;
-      //corrigindo erro pra não ter mudanças bruscas
-      error = target - orientation;
-      if (error > M_PI) {
-          error -= 2 * M_PI;
-      } else if (error < -M_PI) {
-          error += 2 * M_PI;
+      
+      //Verificando se é pra virar mesmo (apenas na primeira iteração do estado)
+      if(target != new_direction and countCurve == 0){
+        step = ANTICOLISION;
+        target = new_direction;
+        right_speed = 0.0;
+        left_speed = 0.0; 
+      }else{
+        //funcionamento normal do curve após de confirmar que precisar virar
+        if(countCurve == 0){
+          offset = getAngle();
+          countCurve = 1;
+        }
+        orientation = getAngle() - offset;
+        //corrigindo erro pra não ter mudanças bruscas
+        error = target - orientation;
+        if (error > M_PI) {
+            error -= 2 * M_PI;
+        } else if (error < -M_PI) {
+            error += 2 * M_PI;
+        }
+
+        
+        if(error < -0.1){
+          right_speed = -0.01;
+          left_speed = 0.01;
+        }else if (error > 0.1){
+          right_speed = 0.01;
+          left_speed = -0.01;
+        }else{
+          right_speed = 0;
+          left_speed = 0;
+        }
+
+        if(abs(error) < 0.1){
+          step = RUN;
+          turning_delay = 0;
+          
+          orientation=0;
+          target = 0;//pois o angulo do giroscopio é resetado
+          new_direction = 0;//-------------------- isso muda algo?
+        }
       }
 
       
-      if(error < -0.1){
-        right_speed = -0.01;
-        left_speed = 0.01;
-      }else if (error > 0.1){
-        right_speed = 0.01;
-        left_speed = -0.01;
-      }else{
-        right_speed = 0;
-        left_speed = 0;
-      }
-
-      if(abs(error) < 0.1){
-        step = RUN;
-        turning_delay = 0;
-        
-        orientation=0;
-        target = 0;//pois o angulo do giroscopio é resetado
-        new_direction = 0;//-------------------- isso muda algo?
-      }
       
       break;
     case ANTICOLISION:
@@ -373,11 +399,11 @@ void loop(){
       
 
       
-      if(dsValues[0] >= 15){
+      if(dsValues[0] >= DISTANCE_FOR_CURVE){
         new_direction = M_PI/2;
-      }else if(dsValues[1] >= 15){
+      }else if(dsValues[1] >= DISTANCE_FOR_CURVE){
         new_direction = 0;
-      }else if(dsValues[2] >= 15){
+      }else if(dsValues[2] >= DISTANCE_FOR_CURVE){
         new_direction = -M_PI/2;    
       }else{
         new_direction = M_PI;
