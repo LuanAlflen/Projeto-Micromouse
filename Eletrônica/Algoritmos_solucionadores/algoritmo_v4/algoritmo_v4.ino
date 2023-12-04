@@ -3,11 +3,11 @@
 #include <MPU6050_tockn.h>
 #include <QTRSensors.h>
 #define TRIG_PIN_LEFT 17
-#define ECHO_PIN_LEFT 16
+#define ECHO_PIN_LEFT 05
 #define TRIG_PIN_RIGHT 02
 #define ECHO_PIN_RIGHT 15
-#define TRIG_PIN_FRONT 18
-#define ECHO_PIN_FRONT 05
+#define TRIG_PIN_FRONT 17
+#define ECHO_PIN_FRONT 16
 #define MOTOR_IN_A1 33 // RIGHT
 #define MOTOR_IN_A2 32 // RIGHT
 #define MOTOR_IN_B1 27 // LEFT
@@ -15,12 +15,16 @@
 #define MOTOR_MAX_SPEED 3.1415
 #define NUMBER_OF_SAMPLES 15
 #define LINHA_1 13
-#define LINHA_3 14
-#define LINHA_6 26
-#define LINHA_8 25
+#define LINHA_3 34
+#define LINHA_6 14
+#define LINHA_8 35
+#define DISPLAY_1 26
+#define DISPLAY_2 04
+#define DISPLAY_3 25
 #define HC_SR04_DISTANCE_CONVERSION_FACTOR 17
 #define MOTOR_TEST
 #define LED_BUILTIN  2
+
 
 QTRSensors qtr;
 MPU6050 mpu6050(Wire);
