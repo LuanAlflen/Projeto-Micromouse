@@ -4,6 +4,14 @@ Este projeto Micromouse é desenvolvido em Webots e inclui implementações de c
 
 ## Versões
 
+### Versão 7.2
+- Data: 08/12/2023
+
+#### Mudanças
+
+- Codigo v4 (testado), porém o PID muito lerdo, mas tudo funcionando, inclisive a a parada
+- Código v5 (não testado), mas com o pwd de 8 bits (antigo), algumas mudanças nos valores de base_speed, PID, parada do robo comentada e tbm travado no anticolisão, além da ida da RUN pro anticolisão se ele identificar parede depois da curve
+
 ### Versão 7.1
 - Data: 02/12/2023
 

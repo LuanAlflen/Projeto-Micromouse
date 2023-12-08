@@ -52,6 +52,3 @@ plt.subplots_adjust(hspace=0.4)
 # plt.legend()
 
 plt.show()
-
-
-
