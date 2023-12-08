@@ -21,6 +21,8 @@ y = [-20.45, -15.5, -11.84, -8.49, 0, 8.49, 11.84, 15.5, 20.45] #Velocidade (cm/
 x2 = [-100, -32.74, -26.74, -23.74, -23.73, 0, 23.73, 23.74, 26.74, 32.74, 100] #utilização do motor (em porcentagem)
 y2 = [-20.45, -15.5, -11.84, -8.49, 0, 0, 0, 8.49, 11.84, 15.5, 20.45] #Velocidade (cm/s)
 
+x3 = [-100, 100]
+y3 = [-20.45, 20.45]
 
 #x2 = [-1, -0.1, 0, 0.1, 1] #utilização do motor (em porcentagem)
 #y2 = [-49.2, -8.2, 0, 8.2, 49.2] #Velocidade (cm/s)
@@ -30,6 +32,7 @@ y2 = [-20.45, -15.5, -11.84, -8.49, 0, 0, 0, 8.49, 11.84, 15.5, 20.45] #Velocida
 plt.subplot(1, 1, 1)  # 2 linhas, 1 coluna, gráfico 1
 plt.plot(x, y, "r-", label="Com offset")
 plt.plot(x2, y2, "b-", label="Sems offset")
+plt.plot(x3, y3, "k--", label="Ideal")
 plt.xlabel('Utilização do motor (%)')
 plt.ylabel('Velocidade (cm/s)')
 # plt.title('Precisão média do melhor indivíduo')
