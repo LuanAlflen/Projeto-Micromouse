@@ -34,7 +34,7 @@
 #define LED_BUILTIN  2
 
 // create shift register object (number of shift registers, data pin, clock pin, latch pin)
-ShiftRegister74HC595 sr (DIGITS, SDI, SCLK, LOAD); 
+ShiftRegister74HC595<2> sr (SDI, SCLK, LOAD); 
 QTRSensors qtr;
 MPU6050 mpu6050(Wire);
 const uint8_t SensorCount = 8;
@@ -82,10 +82,6 @@ struct Motor {
 };
 
 void Motor::setMotorSpeed(float velocity) {
-  //Serial.print("Vel motor: ");
-  //Serial.println(vel);
-  //float velocity = vel / maxSpeed;
-
   if(velocity == 0){
     analogWrite(pin1, 0);      
     analogWrite(pin2, 0);
@@ -262,14 +258,6 @@ float vel_max_curve=0.0;
 
 void loop(){
   while(!done){
-    /*
-    if(step == CURVE){
-      Serial.println("initial_step: CURVE");
-    }else if(step == RUN){
-      Serial.println("initial_step: RUN");
-    }else if(step == ANTICOLISION){
-      Serial.println("initial_step: ANTICOLISION");
-    }*/
   
     initialTime = millis();
     //fazendo a leitura nos sensores
@@ -277,7 +265,6 @@ void loop(){
     dsValues[1] = sensorFront.readSampleAverageDist(4);
     dsValues[2] = sensorRight.readSampleAverageDist(4);
     //codicão inicial
-    
     if(t == 0){
       step = ANTICOLISION;
       Serial.println("");
@@ -308,9 +295,7 @@ void loop(){
             }else{
               new_direction = M_PI;
             }
-          }
-          
-          
+          } 
         }
         
         //Verificando se é pra virar mesmo (apenas na primeira iteração do estado)
@@ -344,7 +329,7 @@ void loop(){
           Kp = 0.0;
           Ki = 0.0;
           
-          if(dsValues[1] <= 4.0){
+          if(dsValues[1] <= 4.2){
             base_speed = 0.0;
           }else{     
             base_speed = 0.02;
@@ -353,7 +338,7 @@ void loop(){
           left_speed = base_speed;
         }
 
-
+        //---------------------------------------- EM TESTE --------------------------------------------
         //se tem parede na esquerda ele já vai direto pro anticolisao se ele ta saindo da curva
         if(next_step = ANTICOLISION and dsValues[0] < DISTANCE_FOR_CURVE){
           step = next_step;
@@ -378,18 +363,18 @@ void loop(){
               error += 2 * M_PI;
           }
   
-          if(error < -0.08){
-            right_speed = -0.03;
-            left_speed = 0.03;
-          }else if (error > 0.08){
-            right_speed = 0.03;
-            left_speed = -0.03;
+          if(error < -0.035){
+            right_speed = -0.02;
+            left_speed = 0.02;
+          }else if (error > 0.035){
+            right_speed = 0.02;
+            left_speed = -0.02;
           }else{
             right_speed = 0;
             left_speed = 0;
           }
   
-          if(abs(error) < 0.08){
+          if(abs(error) < 0.035){
             step = RUN;
             turning_delay = 0;
             orientation=0;
@@ -399,24 +384,13 @@ void loop(){
         
         break;
       case ANTICOLISION:
-        /*
-        if(count_anticolision == 0){
-          Serial.println("entrou aqui: ");
-          //consolePrint(t, turning_delay, identified_curve_time, step, next_step, new_direction, error, error_sensors, Kp);   
-          MotorA.setMotorSpeed(0.4);
-          MotorB.setMotorSpeed(0.4);
-          delay(100);
-          count_anticolision = 1;
-        }
-        */
-        
+       
         Kp = 0.035; // Tava em 0,013
         Ki = 0.0;
         Kd = 0.0025; //201 tava em 0,0011
-
         //Kp = 0.0;
         //Kd = 0.0;
-        base_speed = 0.01;
+        base_speed = 0.03;
         error_sensors = dsValues[0] - (25.3-10.5)/2; //7 == (distancia de labirinto - largura do robo) / 2 -> lab do gian é 25.3
         //error_sensors = dsValues[0] - dsValues[2]; //7 == (distancia de labirinto - largura do robo) / 2
         
@@ -425,7 +399,6 @@ void loop(){
         integral = Ki * sum_error_sensors;
         proportional = Kp * error_sensors;
         derivativo = Kd * (error_sensors-previous_error);
-        
   
         //ainda em teste (para o robo no anticolisão se tem parede na frente)
         if(dsValues[1] <= 4.0){
@@ -433,21 +406,9 @@ void loop(){
         }
 
         right_speed = base_speed + proportional + integral + derivativo;
-        left_speed =  base_speed - proportional - integral - derivativo; 
+        left_speed =  base_speed - proportional - integral - derivativo;    
         
-
-        /*
-        if(right_speed < base_speed + delta and right_speed > base_speed - delta){
-          right_speed = base_speed;
-        }
-        if(left_speed < base_speed + delta and left_speed > base_speed - delta){
-          left_speed = base_speed;
-        }
-        */
-        
- 
-        
-        vel_max_curve=0.2;
+        vel_max_curve=0.5;
         if(left_speed > vel_max_curve){
           left_speed = vel_max_curve;
         }
@@ -461,7 +422,7 @@ void loop(){
           right_speed = 0.015;
         }
         
-        
+        /*
         if(isLeftHandle){
           if(dsValues[0] >= DISTANCE_FOR_CURVE){
             new_direction = M_PI/2;
@@ -483,7 +444,7 @@ void loop(){
             new_direction = M_PI;
           }
         }
-        
+        */
         if(target != new_direction){
           turning_delay = 0;
           step = RUN;
@@ -510,7 +471,7 @@ void loop(){
     identified_curve_time += (float)(finalTime - initialTime) / 1000.0;
   
     previous_error= error_sensors;
-    done = sensorLinha();
+    //done = sensorLinha();
     delay(5);
   }
     MotorA.setMotorSpeed(0);
