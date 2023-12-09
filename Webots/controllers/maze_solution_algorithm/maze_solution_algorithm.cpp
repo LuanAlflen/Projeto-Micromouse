@@ -3,11 +3,18 @@
 #include <webots/Gyro.hpp>
 #include <webots/DistanceSensor.hpp>
 #include <cmath>
+#include <iostream>
+#include "circular_queue.hpp"
 
 #define TIME_STEP 16
+#define LOG(msg,value) log(msg,value, false)
+//#define LOG(msg,value)  
+#define LOGLN(msg,value) log(msg,value, true)
+//#define LOGLN(msg,value)  
+
+#define ANGLE_ESTIMATION_COEFFICIENT 0.07
 
 using namespace webots;
-
 
 
 Robot *robot = new Robot();
@@ -17,6 +24,45 @@ Gyro *gyro = robot->getGyro("gyro");
 DistanceSensor *ds[3];
 
 
+
+template<typename T>
+void log(const char* msg, T value, bool ln){
+  std::cout << msg << value;
+  if (ln) {
+    std::cout << std::endl;
+  }else{
+    std::cout << " ";
+  }
+}
+
+float calculateAngleCorrection(CircularQueue &times, CircularQueue &ds_past_values) {
+   float sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+   int size = MAX_QUEUE_SIZE - 7;
+   float max_correction = 0.35;
+   if (times.getCounter() < 10) return 0.0f;
+   for (int i = 0; i < size; i++) {
+       float y = ds_past_values.dequeue();
+       float x = times.dequeue();
+       sumX += x;
+       sumY += y;
+       sumXY += x * y;
+       sumX2 += x * x;
+   }
+
+   float slope = (size * sumXY - sumX * sumY) / (size * sumX2 - sumX * sumX);
+   times.clear();
+   ds_past_values.clear();
+   
+   float estimatedCorrection = slope*ANGLE_ESTIMATION_COEFFICIENT;
+   if (estimatedCorrection>max_correction){
+     return max_correction*0;
+   }
+   if (estimatedCorrection<-max_correction){
+     return -max_correction*0;
+   }
+   return estimatedCorrection;
+}
+
 const int CURVE = 0;
 const int RUN = 1;
 const int ANTICOLISION = 2;
@@ -24,6 +70,10 @@ const int ANTICOLISION = 2;
 
 char dsNames[3][20] = {"distance_sensor1", "distance_sensor2", "distance_sensor3"};//esq, centro, dir
 double dsValues[3];//em centímetros
+CircularQueue ds_past_values;
+CircularQueue ds_past_times;
+
+
 double orientation = 0.0;
 double target = 0, previous_target=0.0;//previous não usando pra nada ainda nesse código
 double run_delay = 1.0;
@@ -117,7 +167,8 @@ int main() {
     for(int i = 0; i < 3; i++){
       dsValues[i] = ds[i]->getValue()/100;
     }
-    
+    ds_past_times.enqueue(t);
+    ds_past_values.enqueue(dsValues[0]);
     //codicão inicial
     if(t == 0){
       step = ANTICOLISION;
@@ -126,7 +177,7 @@ int main() {
       std::cout << "target: " << target << std::endl;
       target = selectDirection(target);
       std::cout << "target após selectDirection: " << target << std::endl;
-      consolePrint(t, turning_delay, identified_curve_time, step, next_step, new_direction, error, error_sensors, Kp);
+      //consolePrint(t, turning_delay, identified_curve_time, step, next_step, new_direction, error, error_sensors, Kp);
     }
     
     
@@ -139,9 +190,19 @@ int main() {
         run_delay = 0.85;
       }
       
-      if(turning_delay > run_delay){
-        identified_curve_time = t;
-        step = next_step;
+      if(dsValues[0] <= 14 && next_step == ANTICOLISION){
+        step = ANTICOLISION;
+        next_step = CURVE;
+        new_direction = 0;
+      }
+      
+      
+      if( dsValues[1] > 20 && turning_delay > run_delay ){
+          identified_curve_time = t;
+          step = next_step;
+      }else if (dsValues[1] < 4){
+          identified_curve_time = t;
+          step = next_step;      
       }
       Kp = 0.0;
       Ki = 0.0;
@@ -216,40 +277,17 @@ int main() {
       next_step = CURVE;
       //std::cout << "--target: " << target << ", new_direction: " << new_direction << std::endl;
       if(target != new_direction){
+        float correction = calculateAngleCorrection(ds_past_times, ds_past_values);
         turning_delay = 0;
         step = RUN;
-        target = new_direction;
+        target = new_direction + correction;
         right_speed = base_speed;
         left_speed = base_speed; 
         // identified_curve_time = t - 1.0;
       }
-      
-      // if((t - identified_curve_time) > 1.0){
-        // step = RUN;
-      // }
-      
-         
+   
     }
-    
-    // if(turning_delay > 1.1){
-      // new_direction = selectDirection(target);
-    // }
-    
-    
-    // if(new_direction != target and reset_delay == 0){
-      // turning_delay = 0.0;
-      // reset_delay = 1.0;
-    // }
-    
-    // if(new_direction != target and turning_delay > 1.1){
-      // previous_target = target;
-      // target = new_direction;
-      // reset_delay = 0.0;
-      // turning_delay = 0.0;
-    // }
-    
-    
-    
+ 
     //Passa os valores para os motores
     if(dsValues[1] <= 4 and target == 999.0/*new_direction*/){
       motor2->setVelocity(0);
@@ -277,6 +315,11 @@ int main() {
     turning_delay += (double)TIME_STEP / 1000.0;
     identified_curve_time += (double)TIME_STEP / 1000.0;
     
+    LOG("ds_left ", dsValues[0]);
+    LOGLN("time ", t);
+    //LOG("dsensor front:", dsValues[1]);
+    //LOG("dsensor right:", dsValues[2]);
+    //LOG("==============", "=");
   }
 
   delete robot;
