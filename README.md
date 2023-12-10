@@ -4,6 +4,12 @@ Este projeto Micromouse é desenvolvido em Webots e inclui implementações de c
 
 ## Versões
 
+### Versão 7.3
+-Data: 10/12/2023
+-Nova simulação do webots com código para correção de curva e novo critério de transição do estado RUN e CURVE. Se houver uma parede quando entrar na curva, chegar perto da parede, mesmo se isso demorar mais do que o delay padrão. Também um algorítmo para estimar uma correção de angulo ao fazer curvas, caso o robô entre torto na curva.
+
+-Código v6 (a testar) correspondente as mudanças simuladas no webots
+
 ### Versão 7.2
 - Data: 08/12/2023
 

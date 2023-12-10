@@ -1,6 +1,5 @@
 #pragma once
 #define MAX_QUEUE_SIZE 17
-
 class CircularQueue {
   private:
     float queue[MAX_QUEUE_SIZE];
