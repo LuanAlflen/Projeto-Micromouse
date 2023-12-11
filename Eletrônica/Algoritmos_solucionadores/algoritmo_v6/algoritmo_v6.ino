@@ -407,7 +407,7 @@ void loop(){
 
         //---------------------------------------- EM TESTE --------------------------------------------
         //se tem parede na esquerda ele já vai direto pro anticolisao se ele ta saindo da curva
-        if(next_step = ANTICOLISION and dsValues[0] < DISTANCE_FOR_CURVE){
+        if(next_step == ANTICOLISION && dsValues[0] < DISTANCE_FOR_CURVE){
           step = next_step;
           next_step = CURVE;
         }
