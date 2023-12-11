@@ -82,23 +82,16 @@ struct Motor {
 };
 
 void Motor::setMotorSpeed(float velocity) {
-  if(velocity == 0){
-    analogWrite(pin1, 0);      
+  bool forward = velocity > 0;
+  if (abs(velocity) > 1) velocity = 1;
+  int pwmOUT = round(abs(velocity) * (255-75)) + 75;
+  if (forward) {  //forward
+    analogWrite(pin1, pwmOUT);      
     analogWrite(pin2, 0);
-  }else{
-    bool forward = velocity > 0;
-    if (abs(velocity) > 1) velocity = 1;
-    //int pwmOUT = round(abs(velocity) * 255);
-    int pwmOUT = round(abs(velocity) * (255-75)) + 75;
-    if (forward) {  //forward
-      analogWrite(pin1, pwmOUT);      
-      analogWrite(pin2, 0);
-    } else {  // reverse
-      analogWrite(pin1, 0);
-      analogWrite(pin2, pwmOUT);
-    }
+  } else {  // reverse
+    analogWrite(pin1, 0);
+    analogWrite(pin2, pwmOUT);
   }
-  
 }
 
 struct SensorDistance{
@@ -340,7 +333,7 @@ void loop(){
 
         //---------------------------------------- EM TESTE --------------------------------------------
         //se tem parede na esquerda ele já vai direto pro anticolisao se ele ta saindo da curva
-        if(next_step = ANTICOLISION and dsValues[0] < DISTANCE_FOR_CURVE){
+        if(next_step == ANTICOLISION and dsValues[0] < DISTANCE_FOR_CURVE){
           step = next_step;
           next_step = CURVE;
         }
@@ -401,7 +394,7 @@ void loop(){
         derivativo = Kd * (error_sensors-previous_error);
   
         //ainda em teste (para o robo no anticolisão se tem parede na frente)
-        if(dsValues[1] <= 4.0){
+        if(dsValues[1] <= 4.2){
           base_speed = 0.0;
         }
 
