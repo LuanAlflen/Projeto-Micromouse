@@ -34,7 +34,7 @@
 #define LED_BUILTIN  2
 
 // create shift register object (number of shift registers, data pin, clock pin, latch pin)
-ShiftRegister74HC595<2> sr (SDI, SCLK, LOAD); 
+ShiftRegister74HC595 sr (DIGITS, SDI, SCLK, LOAD); 
 QTRSensors qtr;
 MPU6050 mpu6050(Wire);
 const uint8_t SensorCount = 8;
@@ -196,7 +196,7 @@ unsigned long finalTime = millis();
 const int CURVE = 2;
 const int RUN = 1;
 const int ANTICOLISION = 0;
-const float DISTANCE_FOR_CURVE = 18.0;
+const float DISTANCE_FOR_CURVE = 16.0;
 const bool isLeftHandle = true;
 
 
@@ -248,6 +248,7 @@ void consolePrint(double t_, double turning_delay_, double identified_curve_time
     }
 
 float vel_max_curve=0.0;
+float delta_curve = 5*0.01745; //0.01745 é equivalente a 1º em rad
 
 void loop(){
   while(!done){
@@ -270,23 +271,23 @@ void loop(){
         if(countRun == 0){
           if(isLeftHandle){
             if(dsValues[0] >= DISTANCE_FOR_CURVE){
-              new_direction = M_PI/2;
+              new_direction = (M_PI/2) - delta_curve;
             }else if(dsValues[1] >= DISTANCE_FOR_CURVE){
               new_direction = 0;
             }else if(dsValues[2] >= DISTANCE_FOR_CURVE){
-              new_direction = -M_PI/2;    
+              new_direction = (-M_PI/2) + delta_curve;    
             }else{
               new_direction = M_PI;
             }
           }else{
             if(dsValues[2] >= DISTANCE_FOR_CURVE){
-              new_direction = -M_PI/2;
+              new_direction = (-M_PI/2) + delta_curve;
             }else if(dsValues[1] >= DISTANCE_FOR_CURVE){
               new_direction = 0;
             }else if(dsValues[0] >= DISTANCE_FOR_CURVE){
-              new_direction = M_PI/2;    
+              new_direction = (M_PI/2) - delta_curve;    
             }else{
-              new_direction = M_PI;
+              new_direction = (M_PI)-delta_curve;
             }
           } 
         }
@@ -307,9 +308,9 @@ void loop(){
             left_speed = 0.0; 
           }else{
             if(next_step == CURVE){
-              run_delay = 1.13;
+              run_delay = 1.23; //Estava em 1.13
             }else{
-              run_delay = 1.0;
+              run_delay = 0.9; //Estava em 1.0
             }
             
             if(turning_delay > run_delay){
@@ -356,11 +357,11 @@ void loop(){
           }
   
           if(error < -0.035){
-            right_speed = -0.02;
-            left_speed = 0.02;
+            right_speed = -0.015;
+            left_speed = 0.015;
           }else if (error > 0.035){
-            right_speed = 0.02;
-            left_speed = -0.02;
+            right_speed = 0.015;
+            left_speed = -0.015;
           }else{
             right_speed = 0;
             left_speed = 0;
@@ -377,13 +378,13 @@ void loop(){
         break;
       case ANTICOLISION:
        
-        Kp = 0.035; // Tava em 0,013
+        Kp = 0.065; // Tava em 0,035
         Ki = 0.0;
-        Kd = 0.0025; //201 tava em 0,0011
+        Kd = 0.0090; //201 tava em 0,0025
         //Kp = 0.0;
         //Kd = 0.0;
         base_speed = 0.03;
-        error_sensors = dsValues[0] - (25.3-10.5)/2; //7 == (distancia de labirinto - largura do robo) / 2 -> lab do gian é 25.3
+        error_sensors = dsValues[0] - (25.3-10)/2; //7 == (distancia de labirinto - largura do robo) / 2 -> lab do gian é 25.3
         //error_sensors = dsValues[0] - dsValues[2]; //7 == (distancia de labirinto - largura do robo) / 2
         
         // Cálculo do erro integrador
@@ -400,7 +401,7 @@ void loop(){
         right_speed = base_speed + proportional + integral + derivativo;
         left_speed =  base_speed - proportional - integral - derivativo;    
         
-        vel_max_curve=0.5;
+        vel_max_curve=0.99;
         if(left_speed > vel_max_curve){
           left_speed = vel_max_curve;
         }
@@ -414,16 +415,16 @@ void loop(){
           right_speed = 0.015;
         }
         
-        /*
+        
         if(isLeftHandle){
           if(dsValues[0] >= DISTANCE_FOR_CURVE){
-            new_direction = M_PI/2;
+            new_direction = (M_PI/2)-delta_curve;
           }else if(dsValues[1] >= DISTANCE_FOR_CURVE){
             new_direction = 0;
           }else if(dsValues[2] >= DISTANCE_FOR_CURVE){
-            new_direction = -M_PI/2;    
+            new_direction = (-M_PI/2)+delta_curve;    
           }else{
-            new_direction = M_PI;
+            new_direction = (M_PI)-delta_curve;
           }
         }else{
           if(dsValues[2] >= DISTANCE_FOR_CURVE){
@@ -436,7 +437,7 @@ void loop(){
             new_direction = M_PI;
           }
         }
-        */
+        
         if(target != new_direction){
           turning_delay = 0;
           step = RUN;
