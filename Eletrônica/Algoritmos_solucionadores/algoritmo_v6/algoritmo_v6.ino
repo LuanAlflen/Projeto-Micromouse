@@ -383,16 +383,7 @@ void loop(){
               step = next_step;      
           }
 
-          if(turning_delay > run_delay){
-            identified_curve_time = t;
-            step = next_step;
-            if (step == CURVE){
-              countCurve = 0;
-              next_step = ANTICOLISION;
-            }else{
-              next_step = CURVE;
-            }
-          }
+
           Kp = 0.0;
           Ki = 0.0;
           
