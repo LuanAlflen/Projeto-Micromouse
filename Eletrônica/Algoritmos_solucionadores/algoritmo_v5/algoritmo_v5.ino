@@ -291,55 +291,54 @@ void loop(){
           } 
         }
         
-        //Verificando se é pra virar mesmo (apenas na primeira iteração do estado)
-        if(target != new_direction and countRun == 0 and next_step == CURVE){
-          countRun = 1;
-          step = ANTICOLISION;
-          next_step = CURVE;
-          target = new_direction;
-          right_speed = 0.0;
-          left_speed = 0.0; 
-        }else{
-          Serial.println("Inicio Run:");
-          if(next_step == CURVE){
-            //run_delay = 1.4; era 1.4 mas alterei (05.12) para testar no labirinto em casa
-            run_delay = 1.13;
-          }else{
-            //run_delay = 1.2; era 1.2 mas alterei (05.12) para testar no labirinto em casa
-            run_delay = 1.0;
-          }
-          
-          if(turning_delay > run_delay){
-            identified_curve_time = t;
-            step = next_step;
-            if (step == CURVE){
-              countCurve = 0;
-              next_step = ANTICOLISION;
-            }else{
-              next_step = CURVE;
-            }
-          }
-          Kp = 0.0;
-          Ki = 0.0;
-          
-          if(dsValues[1] <= 4.2){
-            base_speed = 0.0;
-          }else{     
-            base_speed = 0.02;
-          }
-          right_speed = base_speed;
-          left_speed = base_speed;
-        }
-
         //---------------------------------------- EM TESTE --------------------------------------------
         //se tem parede na esquerda ele já vai direto pro anticolisao se ele ta saindo da curva
-        if(next_step == ANTICOLISION and dsValues[0] < DISTANCE_FOR_CURVE){
+        if(next_step == ANTICOLISION and dsValues[0] < DISTANCE_FOR_CURVE and countRun == 0){
           step = next_step;
           next_step = CURVE;
-        }
+        }else{
+          //Verificando se é pra virar mesmo -> na entrada da curva (apenas na primeira iteração do estado)
+          if(target != new_direction and countRun == 0 and next_step == CURVE){
+            countRun = 1;
+            step = ANTICOLISION;
+            next_step = CURVE;
+            target = new_direction;
+            right_speed = 0.0;
+            left_speed = 0.0; 
+          }else{
+            if(next_step == CURVE){
+              run_delay = 1.13;
+            }else{
+              run_delay = 1.0;
+            }
+            
+            if(turning_delay > run_delay){
+              identified_curve_time = t;
+              step = next_step;
+              if (step == CURVE){
+                countCurve = 0;
+                next_step = ANTICOLISION;
+              }else{
+                next_step = CURVE;
+              }
+            }
+            Kp = 0.0;
+            Ki = 0.0;
+            
+            if(dsValues[1] <= 4.2){
+              base_speed = 0.0;
+            }else{     
+              base_speed = 0.02;
+            }
+            right_speed = base_speed;
+            left_speed = base_speed;
+          }
+
+        
         
   
-        
+         
+        }
         break;
       case CURVE:
         //funcionamento normal do curve após de confirmar que precisar virar
