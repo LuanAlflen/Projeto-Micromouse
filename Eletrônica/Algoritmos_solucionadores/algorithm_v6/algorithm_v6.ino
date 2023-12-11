@@ -396,7 +396,7 @@ void loop(){
           Kp = 0.0;
           Ki = 0.0;
           
-          if(dsValues[1] <= 4.0){
+          if(dsValues[1] <= 4.2){
             base_speed = 0.0;
           }else{     
             base_speed = 0.02;
@@ -428,18 +428,18 @@ void loop(){
               error += 2 * M_PI;
           }
   
-          if(error < -0.08){
-            right_speed = -0.03;
-            left_speed = 0.03;
-          }else if (error > 0.08){
-            right_speed = 0.03;
-            left_speed = -0.03;
+          if(error < -0.035){
+            right_speed = -0.02;
+            left_speed = 0.02;
+          }else if (error > 0.035){
+            right_speed = 0.02;
+            left_speed = -0.02;
           }else{
             right_speed = 0;
             left_speed = 0;
           }
   
-          if(abs(error) < 0.08){
+          if(abs(error) < 0.035){
             step = RUN;
             turning_delay = 0;
             orientation=0;
@@ -557,7 +557,7 @@ void loop(){
     MotorB.setMotorSpeed(left_speed);
     showNumber(step);
     
-    consolePrint(t, turning_delay, identified_curve_time, step, next_step, new_direction, error, error_sensors, Kp);   
+    //consolePrint(t, turning_delay, identified_curve_time, step, next_step, new_direction, error, error_sensors, Kp);   
   
     finalTime = millis();
     t += (float)(finalTime - initialTime) / 1000.0;
@@ -570,7 +570,7 @@ void loop(){
   }
     MotorA.setMotorSpeed(0);
     MotorB.setMotorSpeed(0);
-    showNumber(60);
+    showNumber(66);
     delay(60000);
 }
 
