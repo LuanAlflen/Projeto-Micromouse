@@ -1,12 +1,25 @@
 # Projeto Micromouse
 
-Este projeto Micromouse é desenvolvido em Webots e inclui implementações de controle PID para orientação, navegação e resolução de labirintos do robô.
+Este projeto Micromouse, autônomo, é desenvolvido em simulação (Webots) e experimental (Prático). Inclui implementações de controle PID para orientação, navegação e resolução de labirintos do robô.
 
 ## Versões
 
+### Versão 7.4
+- Data: 12/12/2023
+
+#### Mudanças
+
+- Código final da disciplina em Eletrônica/Algoritmo Solucionadores/algoritmo_v7
+- Nele, ajustes como aplicação de um delta negativo na angulo de virada foi essencial, pois notou-se que o robo virava sistematicamente a mais do que os 90° ou 180° (o que pode ser explicado pela inercia de rotação que ele possui quando esta em movimento), asism, com um delta de 5° as curvas passaram a ser mais precisas e o robo ficou bem mais consistente e responsivo
+- Além disso, foi adiciona mais controle derivativa ao controle anticolisão
+- De maneira geral, o robo consegue resolver o labirinto (2 x 1.5) inteiro de qualquer posição em aproximadamente 4 min.
+
 ### Versão 7.3
--Data: 10/12/2023
--Nova simulação do webots com código para correção de curva e novo critério de transição do estado RUN e CURVE. Se houver uma parede quando entrar na curva, chegar perto da parede, mesmo se isso demorar mais do que o delay padrão. Também um algorítmo para estimar uma correção de angulo ao fazer curvas, caso o robô entre torto na curva.
+- Data: 10/12/2023
+
+#### Mudanças
+
+- Nova simulação do webots com código para correção de curva e novo critério de transição do estado RUN e CURVE. Se houver uma parede quando entrar na curva, chegar perto da parede, mesmo se isso demorar mais do que o delay padrão. Também um algorítmo para estimar uma correção de angulo ao fazer curvas, caso o robô entre torto na curva.
 
 -Código v6 (a testar) correspondente as mudanças simuladas no webots
 
